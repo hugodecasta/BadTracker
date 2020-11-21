@@ -92,9 +92,10 @@ init_tracker(tracker, history, end_update_cb)
 
 Data/Error callback head
 ```js
-<anonymous>(data, error)
+<anonymous>(data, history, error)
 ```
  * **data** new data retrieved from the tracker job
+ * **history** the currently been updated tracker's history
  * **error** error event
 
 The callback can be called when one of these three events occurs:
@@ -175,11 +176,11 @@ all_cities_name.forEach(city_name => {
 And finaly initiate all the trackers
 ```js
 for (let tracker_name in all_trackers) {
-    tracker_init(all_trackers[tracker_name], [], (data, err) => {
+    tracker_init(all_trackers[tracker_name], [], (data, hist, err) => {
         if (err) {
             if (data) {
                 console.log('augment failed on', tracker_name, err)
-                return true
+                return false
             }
             console.log('error on', tracker_name, err)
             return

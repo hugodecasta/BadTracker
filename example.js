@@ -77,11 +77,11 @@ all_cities_name.forEach(city_name => {
 // ------------------------------------------------------------------------------------- TRACKERS INIT
 
 for (let tracker_name in all_trackers) {
-    tracker_init(all_trackers[tracker_name], [], (data, err) => {
+    tracker_init(all_trackers[tracker_name], [], (data, hist, err) => {
         if (err) {
             if (data) {
                 console.log('augment failed on', tracker_name, err)
-                return
+                return false
             }
             console.log('error on', tracker_name, err)
             return
