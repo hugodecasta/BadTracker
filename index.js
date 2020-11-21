@@ -16,7 +16,7 @@ const update_time_ms = 1000
 function init_tracker(tracker, history, end_update_cb) {
 
     // --- exception system
-    let error = (error) => end_update_cb(null, error)
+    let error = (error) => { throw error }
 
     const { image } = tracker
 
@@ -31,7 +31,7 @@ function init_tracker(tracker, history, end_update_cb) {
         // --- create data storer
         let data = clone(input_data)
         data.begin_update = now()
-        const { base_data, check_change, augment_data } = image
+        const { pre_data, check_change, augment_data } = image
 
         // --- data registering system
         let register_data = async (data_map, data_name) => {
@@ -44,7 +44,7 @@ function init_tracker(tracker, history, end_update_cb) {
         }
 
         // --- register all base data
-        await Promise.all(Object.keys(base_data).map(async data_name => await register_data(base_data, data_name)))
+        await Promise.all(Object.keys(pre_data).map(async data_name => await register_data(pre_data, data_name)))
 
         // --- check if update
         let last_data_point = history[history.length - 1] ?? null
@@ -53,9 +53,10 @@ function init_tracker(tracker, history, end_update_cb) {
             // --- register all augmenting data
             try {
                 await Promise.all(Object.keys(augment_data).map(async data_name => await register_data(augment_data, data_name)))
-
             } catch (e) {
-                end_update_cb(data, e)
+                console.log(e)
+                if (!end_update_cb(data, e))
+                    return
             }
 
             // --- save history
@@ -83,7 +84,7 @@ function init_tracker(tracker, history, end_update_cb) {
         try {
             await update_tracker()
         } catch (e) {
-            error(e)
+            end_update_cb(null, e)
         }
         currently_updating = false
     }
