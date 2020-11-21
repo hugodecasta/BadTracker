@@ -13,10 +13,10 @@ let now = () => Date.now()
 // ------------------------------------------------ TRACKER INIT
 
 const update_time_ms = 1000
-function init_tracker(tracker_name, tracker, history, end_update_cb) {
+function init_tracker(tracker, history, end_update_cb) {
 
     // --- exception system
-    let error = (error) => { throw `TRACKER ERROR on "${tracker_name}": ${error}` }
+    let error = (error) => end_update_cb(null, error)
 
     const { image } = tracker
 
@@ -83,7 +83,7 @@ function init_tracker(tracker_name, tracker, history, end_update_cb) {
         try {
             await update_tracker()
         } catch (e) {
-            end_update_cb(null, e)
+            error(e)
         }
         currently_updating = false
     }
