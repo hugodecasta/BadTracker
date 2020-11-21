@@ -55,14 +55,14 @@ function init_tracker(tracker, history, end_update_cb) {
                 await Promise.all(Object.keys(augment_data).map(async data_name => await register_data(augment_data, data_name)))
             } catch (e) {
                 console.log(e)
-                if (!end_update_cb(data, e))
+                if (!end_update_cb(data, history, e))
                     return
             }
 
             // --- save history
             data.end_update = now()
             history.push(clone(data))
-            end_update_cb(data)
+            end_update_cb(data, history)
         }
 
     }
@@ -84,7 +84,7 @@ function init_tracker(tracker, history, end_update_cb) {
         try {
             await update_tracker()
         } catch (e) {
-            end_update_cb(null, e)
+            end_update_cb(null, history, e)
         }
         currently_updating = false
     }
