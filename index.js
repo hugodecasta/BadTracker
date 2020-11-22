@@ -68,7 +68,7 @@ function init_tracker(tracker, history, end_update_cb) {
     }
 
     // --- interval variables
-    let last_update_time = now()
+    let last_update_time = 0
     let currently_updating = false
     const { min_ttu } = image
 
